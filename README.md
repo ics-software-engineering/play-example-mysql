@@ -125,7 +125,7 @@ The following screen shot illustrates the running application:
 
 **Running this application**
 
-To get this application to run, just do the following:
+To run this application, do the following:
 
   * Install and run MySQL as described above. 
   * Define the PLAY_MYSQL_USER and PLAY_MYSQL_PASSWORD environment variables.
