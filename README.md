@@ -24,6 +24,7 @@ Post-installation: set root password
 
 The most important thing to do following your local installation is to create a 
 password for the root accounts.  The following commands show one way to do it:
+
     $ mysql -u root
     mysql> select User, Host, Password from mysql.user; 
     mysql> update mysql.user SET Password = PASSWORD('ReplaceWithGoodPassword') WHERE User = 'root';
