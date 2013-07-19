@@ -37,19 +37,19 @@ password for the root accounts.  The following commands show one way to do it:
     mysql> flush privileges;
     
 See the [post-installation instructions](http://dev.mysql.com/doc/refman/5.7/en/postinstallation.html)
-for more details. For example, you might want to drop the "test" database, or restrict
+for more information on configuring your MySQL installation. For example, you might want to drop the "test" database, or restrict
 anonymous use. 
 
 **4. Create user and password environment variables**
 
-There are at least two good reasons to not put your MySQL credentials (username and password) in your Play application.conf file
+There are at least two good reasons you shouldn't put your MySQL credentials (username and password) in your Play application.conf file
 if you are using a cloud-based hosting service such as GitHub:
 
-  1. Other developers working on the system will have to set the same local credentials;
+  1. Other developers working on the system will either have to define the same credentials or override yours;
   2. It is just totally lame to put credentials into publicly available files hosted online.
    
 Fortunately, there is an easy solution: reference environment variables that point to 
-the actual credentials in application.conf instead. To prepare for this, the next step is to define two environment variables with the
+the actual credentials. To prepare for this, the next step is to define two environment variables with the
 MySQL username and password you wish to use for local Play development.  On Unix, you might edit ~/.profile to include:
 
     export PLAY_MYSQL_USER=root
@@ -61,13 +61,13 @@ manipulated by the application.
 
 **5. Create the database to be used with your Play application**
 
-A significant difference between the default "H2" database application used by Play and MySQL
+A significant difference between Play's default "H2" database and MySQL
 is that H2 will automatically create the database to be used with your Play
-application, but but MySQL will not. Thus, you have to manually create the database (but not the schema) to be used
+application, but MySQL will not. Thus, you have to manually create the MySQL database to be used
 with your application.
 
 For this example, we will call our database "playexamplemysql". Assuming we 
-are using the root user, you can create it in MySQL with the following
+are using the root user for Play development, you can create it in MySQL with the following
 
     $ mysql -u root -p
     Enter password: <enter password here>
@@ -75,7 +75,7 @@ are using the root user, you can create it in MySQL with the following
     Query OK, 1 row affected (0.00 sec)
     mysql> exit
  
-**6. Edit Build.scala to import the mysql connector**
+**6. Edit Build.scala**
 
 Add this line:
 
@@ -83,7 +83,7 @@ Add this line:
 
 See the [example Build.scala file](https://github.com/ics-software-engineering/play-example-mysql/blob/master/project/Build.scala) for details.
 
-**7. Edit application.conf to use MySQL database properties**
+**7. Edit application.conf**
 
 You will edit four properties to something similar to the following:
 
@@ -114,13 +114,16 @@ Test your local MySQL installation
 ==================================
 
 An easy way to test your local MySQL installation is to run this sample application (play-example-mysql).
-This application minimally enhances the default Play application with a single entity (PageRetrieval),
-an instance of which is created and saved in the MySQL database each time the home page is retrieved.  The index
-controller is modified to retrieve the total number of PageRetrieval instances from the database
-each time a request for the home page is received, and print that out that total in the home page as illustrated
-in the following screen shot:
+This application minimally enhances the default Play application with a single entity ([PageRetrieval](https://github.com/ics-software-engineering/play-example-mysql/blob/master/app/models/PageRetrieval.java)),
+an instance of which is created and saved in the MySQL database each time the home page is retrieved.  The [index
+controller](https://github.com/ics-software-engineering/play-example-mysql/blob/master/app/controllers/Application.java) is modified to retrieve the total number of PageRetrieval instances from the database
+each time a request for the home page is received, and creates a string indicating the total in the home page.
+
+The following screen shot illustrates the running application:
 
 ![screenshot](https://raw.github.com/ics-software-engineering/play-example-mysql/master/doc/play-example-mysql-home.png)
+
+**Running this application**
 
 To get this application to run, just do the following:
 
