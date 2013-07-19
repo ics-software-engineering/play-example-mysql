@@ -27,7 +27,7 @@ public class PageRetrieval extends Model {
   }
 
   /**
-   * @return the timestamp
+   * @return the timestamp associated with the page retrieval.
    */
   public Long getTimestamp() {
     return timestamp;
