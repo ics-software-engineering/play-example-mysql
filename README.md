@@ -15,7 +15,7 @@ Here are the steps to use MySQL locally for development of Play applications:
 **1. Download and install MySQL**
 
 Install MySQL by downloading the [MySQL Community Server](http://dev.mysql.com/downloads/mysql/) following the [instructions](http://dev.mysql.com/doc/refman/5.6/en/installing.html).
-You will need to create a free account. This project was tested using MySQL
+This project was tested using MySQL
 Community Server 5.6.12 for Mac OS X version 10.7 (x86, 64 bit). 
 
 **2. Start MySQL**
@@ -49,7 +49,7 @@ if you are using a cloud-based hosting service such as GitHub:
   2. It is just totally lame to put credentials into publicly available files hosted online.
    
 Fortunately, there is an easy solution: reference environment variables that point to 
-the actual credentials. To prepare for this, the next step is to define two environment variables with the
+the actual credentials. To support this approach, define two environment variables with the
 MySQL username and password you wish to use for local Play development.  On Unix, you might edit ~/.profile to include:
 
     export PLAY_MYSQL_USER=root
@@ -131,8 +131,10 @@ To get this application to run, just do the following:
   * Define the PLAY_MYSQL_USER and PLAY_MYSQL_PASSWORD environment variables.
   * Download the system, cd into the directory, and invoke "play run".
   * Retrieve the system in your browser at http://localhost:9000
-  
-    
+  * Refresh the page.   You should see the top line change to indicate a new number of page retrievals.
+  * Stop the system (control-D in the Play console). You will return to the shell.    
+  * Invoke "play run" again, and refresh the page in your browser. You should see an updated number
+    of page retrievals indicating that the state of the database survived a web server restart.  
   
    
   
