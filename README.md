@@ -89,8 +89,8 @@ You will edit four properties to something similar to the following:
 
     db.default.driver=com.mysql.jdbc.Driver
     db.default.url="jdbc:mysql://localhost/playexamplemysql?characterEncoding=UTF-8"
-    db.default.user=${?PLAY_MYSQL_USER}
-    db.default.password=${?PLAY_MYSQL_PASSWORD}
+    db.default.user=${PLAY_MYSQL_USER}
+    db.default.password=${PLAY_MYSQL_PASSWORD}
     
 Note that the db.default.url property references the newly created database (playexamplemysql), and the
 db.default.user and db.default.password properties reference the newly created environment variables with the MySQL
