@@ -136,6 +136,9 @@ To test out your MySQL installation using this application, do the following:
   * Invoke "play run" again, and refresh the page in your browser. You should see an updated number
     of page retrievals indicating that the state of the database survived a web server restart.  
   
-   
+CloudBees deployment
+====================
+
+Available soon.
   
  
