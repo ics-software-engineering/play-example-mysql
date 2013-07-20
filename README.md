@@ -125,7 +125,7 @@ The following screen shot illustrates the running application:
 
 **Running this application**
 
-To run this application, do the following:
+To test out your MySQL installation using this application, do the following:
 
   * Install and run MySQL as described above. 
   * Define the PLAY_MYSQL_USER and PLAY_MYSQL_PASSWORD environment variables.
