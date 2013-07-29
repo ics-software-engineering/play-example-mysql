@@ -4,19 +4,23 @@
 # --- !Ups
 
 create table page_retrieval (
-  primary_key               bigint auto_increment not null,
+  primary_key               bigint not null,
   timestamp                 bigint,
   constraint pk_page_retrieval primary key (primary_key))
 ;
+
+create sequence page_retrieval_seq;
 
 
 
 
 # --- !Downs
 
-SET FOREIGN_KEY_CHECKS=0;
+SET REFERENTIAL_INTEGRITY FALSE;
 
-drop table page_retrieval;
+drop table if exists page_retrieval;
 
-SET FOREIGN_KEY_CHECKS=1;
+SET REFERENTIAL_INTEGRITY TRUE;
+
+drop sequence if exists page_retrieval_seq;
 

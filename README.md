@@ -49,11 +49,13 @@ if you are using a cloud-based hosting service such as GitHub:
   2. It is just totally lame to put credentials into publicly available files hosted online.
    
 Fortunately, there is an easy solution: reference environment variables that point to 
-the actual credentials. To support this approach, define two environment variables with the
-MySQL username and password you wish to use for local Play development.  On Unix, you might edit ~/.profile to include:
+the actual credentials. To support this approach, define three environment variables with the
+MySQL username and password you wish to use for local Play development.  
+On Unix, you might edit ~/.profile to include:
 
-    export PLAY_MYSQL_USER=root
-    export PLAY_MYSQL_PASSWORD=ReplaceWithGoodPassword
+    export DATABASE_URL_DB=mysql://localhost/playexamplemysql?characterEncoding=UTF-8
+    export DATABASE_USERNAME_DB=root
+    export DATABASE_PASSWORD_DB=YourPasswordHere
     
 If you choose to create a new MySQL user rather than using the root user, then 
 you will need to be sure to grant that user privileges for the database
@@ -79,7 +81,7 @@ are using the root user for Play development, you can create it in MySQL with th
 
 Add this line:
 
-    "mysql" % "mysql-connector-java" % "5.1.18"
+    "mysql" % "mysql-connector-java" % "5.1.21"
 
 See the [example Build.scala file](https://github.com/ics-software-engineering/play-example-mysql/blob/master/project/Build.scala) for details.
 
@@ -88,9 +90,9 @@ See the [example Build.scala file](https://github.com/ics-software-engineering/p
 You will edit four properties to something similar to the following:
 
     db.default.driver=com.mysql.jdbc.Driver
-    db.default.url="jdbc:mysql://localhost/playexamplemysql?characterEncoding=UTF-8"
-    db.default.user=${PLAY_MYSQL_USER}
-    db.default.password=${PLAY_MYSQL_PASSWORD}
+    db.default.url="jdbc:"${DATABASE_URL_DB}
+    db.default.user=${DATABASE_USERNAME_DB}
+    db.default.password=${DATABASE_PASSWORD_DB}
     
 Note that the db.default.url property references the newly created database (playexamplemysql), and the
 db.default.user and db.default.password properties reference the newly created environment variables with the MySQL
@@ -128,7 +130,7 @@ The following screen shot illustrates the running application:
 To test out your MySQL installation using this application, do the following:
 
   * Install and run MySQL as described above. 
-  * Define the PLAY_MYSQL_USER and PLAY_MYSQL_PASSWORD environment variables.
+  * Define the three environment variables as specified above.
   * Download the system, cd into the directory, and invoke "play run".
   * Retrieve the system in your browser at http://localhost:9000
   * Refresh the page.   You should see the top line change to indicate a new number of page retrievals.
