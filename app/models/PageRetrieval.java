@@ -1,12 +1,11 @@
 package models;
 
 import java.util.Date;
-
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
 import com.avaje.ebean.Ebean;
-
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
@@ -14,6 +13,7 @@ import play.db.ebean.Model;
 public class PageRetrieval extends Model {
 
   @Id
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
   private Long primaryKey;
   @Required
   private Long timestamp = System.currentTimeMillis();
