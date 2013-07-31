@@ -108,9 +108,23 @@ Finally, to activate the Ebean ORM, uncomment the following line:
 See the [example application.conf](https://github.com/ics-software-engineering/play-example-mysql/blob/master/conf/application.conf) to 
 see all these changes in context.
 
-**8. Test your local Play+MySQL installation.**
+**8. Delete the existing conf/evolutions directory (if present).**
 
-An easy way to test your local MySQL installation is to run this sample application (play-example-mysql).
+If you have been doing development with the default H2 database, and are now transitioning to 
+MySQL, you should delete the conf/evolutions directory, because it contains SQL statements 
+that are legal in H2 (such as "create sequence") but illegal in MySQL.  This will force
+Play to recreate the conf/evolutions directory and a 1.sql file from scratch using legal MySQL syntax
+the next time you invoke "play run".
+
+**9. Invoke "play run".**
+
+Invoking "play run" will run Play in "development mode", resulting in the creation of
+MySQL tables appropriate for your Model classes. 
+
+
+**(Optional) Test your local Play+MySQL installation.**
+
+If you run into problems, an easy way to test your local MySQL installation is to run this sample application (play-example-mysql).
 This application minimally enhances the default Play application with a single entity ([PageRetrieval](https://github.com/ics-software-engineering/play-example-mysql/blob/master/app/models/PageRetrieval.java)),
 an instance of which is created and saved in the MySQL database each time the home page is retrieved.  The [index
 controller](https://github.com/ics-software-engineering/play-example-mysql/blob/master/app/controllers/Application.java) is modified to retrieve the total number of PageRetrieval instances from the database
@@ -271,6 +285,11 @@ You can refresh this page and see that the counter is updated.
 application by triggering a build and deployment each time you commit.  To see how to do that, 
 look at the [play-example-continuous-integration](http://ics-software-engineering.github.io/play-example-continuous-integration/)
 project.
+
+Acknowledgements
+================
+
+Many thanks to Felix Belzunce of CloudBees who patiently and promptly answered my many questions as I developed this tutorial.
 
 
 
