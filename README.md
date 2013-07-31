@@ -126,39 +126,42 @@ Each time you refresh the page, the number displayed will increment.
 
 **Running this application**
 
-To test out your MySQL installation using this application, do the following:
+To test your MySQL installation using play-example-mysql, do the following:
 
   * Install and run MySQL as described above. 
   * Define the three environment variables as specified above.
-  * Download the system, cd into the directory, and invoke "play run".
+  * Download the source code, cd into the directory, and invoke "play run". (Using the run command invokes
+    Play in "development mode", which will run evolutions to set up the appropriate tables in your MySQL database.)
   * Retrieve the system in your browser at http://localhost:9000
   * Refresh the page.   You should see the top line change to indicate a new number of page retrievals.
   * Stop the system (control-D in the Play console). You will return to the shell.    
   * Invoke "play run" again, and refresh the page in your browser. You should see an updated number
-    of page retrievals indicating that the state of the database survived a web server restart.  
+    of page retrievals indicating that the state of the database survived a web server restart. 
   
 CloudBees deployment
 ====================
 
-You will normally want to do local development in Play's "development mode" in order for Play to 
-manage the database schemas (table definitions) for you automatically.  That's a big win.  
-The major conceptual change in CloudBees deployment is the use of Play's "production mode", where 
-database schemas must be managed manually. 
+You will normally want to do local development in Play's "development mode" so that Play can 
+manage and evolve the database schemas (table definitions) for you automatically.  That's a big win.  The major 
+conceptual change for CloudBees deployment is that it uses Play's "production mode", which
+requires database schemas to be managed manually. 
 
 So, to deploy your application to CloudBees, you must:
 
-  1. Disable database evolutions.
-  2. Manually create and maintain the table structure of your database.
+  1. Create the Play application stack on CloudBees.
+  2. Manually create the table structure of your database.
+  3. Disable database evolution.
+  4. Deploy a distribution of the application to CloudBees.
   
-Here's one way to do it.
+Here's one of several possible ways to accomplish the above four steps.
 
-**Use ClickStart to create a full Play application stack.**
+**Create the Play application stack on CloudBees.**
 
 Login to CloudBees, and use the ClickStart mechanism to create a new default Play application.
 For this example, I created a CloudBees application called "play-mysql".  I recommend that you 
 keep your CloudBees application names to 16 characters or less in order to avoid truncation.
 
-**Manually recreate the structure of your local database in the CloudBees database.**
+**Manually create the table structure of your database.**
 
 As part of your local development, you will have created the folder conf/evolutions/default
 containing a set of .sql files with all of the SQL commands necessary to create your 
@@ -201,10 +204,10 @@ It is amusing to note that for local development, you must create the database m
 tables are managed for you automatically, while CloudBees is the opposite: it will create the database
 for you automatically but requires you to manually manage the tables.
 
-**Create an alternative application.conf file to be used by CloudBees.**
+**Disable database evolutions.**
 
-CloudBees needs you to disable evolutions, even though you will want them enabled for local
-development.   The easiest way to do that is to create an alternative configuration file for 
+CloudBees needs you to disable evolutions on your application, even though you will want them enabled for local
+development.   An easy way to achieve both is to create an alternative configuration file for 
 use by CloudBees.  I do this by creating [application.cloudbees.conf](https://github.com/ics-software-engineering/play-example-mysql/blob/master/conf/application.cloudbees.conf)
 in the same directory as the application.conf file.   It is very simple:
 
@@ -235,8 +238,39 @@ Here's an example invocation of this command for the play-mysql application:
       Runtime Parameters:
         java_version=1.7
 
-**Deploy a distribution of the application to CloudBees**
+**Deploy a distribution of the application to CloudBees.**
 
+*Option 1: Manually.*  First, create a distribution zip file of your system by invoking "play dist". For example:
+
+    $ play dist
+    [info] Loading project definition from /Users/johnson/projecthosting/github/play-example-mysql/project
+    [info] Set current project to play-example-mysql (in build file:/Users/johnson/projecthosting/github/play-example-mysql/)
+    [info] Wrote /Users/johnson/projecthosting/github/play-example-mysql/target/scala-2.10/play-example-mysql_2.10-1.0-SNAPSHOT.pom
+    
+    Your application is ready in /Users/johnson/projecthosting/github/play-example-mysql/dist/play-example-mysql-1.0-SNAPSHOT.zip
+    
+    [success] Total time: 2 s, completed Jul 30, 2013 7:42:37 PM
+
+Next, send that distribution file to CloudBees using the "bees app:deploy" command. For example:
+
+    $ bees app:deploy -a philipmjohnson/play-mysql -t play2 dist/play-example-mysql-1.0-SNAPSHOT.zip
+      Deploying application philipmjohnson/play-mysql (environment: ): dist/play-example-mysql-1.0-SNAPSHOT.zip
+      Application parameters: {containerType=play2}
+      ........................uploaded 25%
+      ........................uploaded 50%
+      ........................uploaded 75%
+      ........................upload completed
+      deploying application to server(s)...
+      Application philipmjohnson/play-mysql deployed: http://play-mysql.philipmjohnson.cloudbees.net
+
+Now you should be able to retrieve the application at the URL above:
+
+![screenshot](https://raw.github.com/ics-software-engineering/play-example-mysql/master/doc/play-example-mysql-cloudbees.png)
+
+*Option 2: Continuous Integration.*  Another second approach is to automate the deployment of your 
+application by triggering a build and deployment each time you commit.  To see how to do that, 
+look at the [play-example-continuous-integration](http://ics-software-engineering.github.io/play-example-continuous-integration/)
+project.
 
 
 
