@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Play-example-mysql : Example configuration of play framework application to use MySQL" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Play-example-mysql</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/ics-software-engineering/play-example-mysql">View on GitHub</a>
+
+          <h1 id="project_title">Play-example-mysql</h1>
+          <h2 id="project_tagline">Example configuration of play framework application to use MySQL</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/ics-software-engineering/play-example-mysql/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/ics-software-engineering/play-example-mysql/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="summary" class="anchor" href="#summary"><span class="octicon octicon-link"></span></a>Summary</h1>
+
+<p>This project shows how to set up your Play Framework application to:</p>
+
+<ul>
+<li>use MySQL locally.</li>
+<li>deploy to CloudBees and configure to use their MySQL database.</li>
+</ul><h1>
+<a name="local-use-of-mysql-with-play" class="anchor" href="#local-use-of-mysql-with-play"><span class="octicon octicon-link"></span></a>Local use of MySQL with Play</h1>
+
+<p>Here are the steps to use MySQL locally for development of Play applications:</p>
+
+<p><strong>1. Download and install MySQL</strong></p>
+
+<p>Install MySQL by downloading the <a href="http://dev.mysql.com/downloads/mysql/">MySQL Community Server</a> following the <a href="http://dev.mysql.com/doc/refman/5.6/en/installing.html">instructions</a>.
+This project was tested using MySQL
+Community Server 5.6.12 for Mac OS X version 10.7 (x86, 64 bit). </p>
+
+<p><strong>2. Start MySQL</strong></p>
+
+<p>This varies depending upon the platform.  On a Mac, the installation process enables you to create
+a preferences panel where you can start or stop your local MySQL server:</p>
+
+<p><img src="https://raw.github.com/ics-software-engineering/play-example-mysql/master/doc/play-example-mysql-mac-prefs-panel.png" alt="screenshot"></p>
+
+<p><strong>3. Set root password</strong></p>
+
+<p>The most important thing to do following your local installation is to immediately create a 
+password for the root accounts.  The following commands show one way to do it:</p>
+
+<pre><code>$ mysql -u root
+mysql&gt; select User, Host, Password from mysql.user; 
+mysql&gt; update mysql.user SET Password = PASSWORD('ReplaceWithGoodPassword') WHERE User = 'root';
+mysql&gt; flush privileges;
+</code></pre>
+
+<p>See the <a href="http://dev.mysql.com/doc/refman/5.7/en/postinstallation.html">post-installation instructions</a>
+for more information on configuring your MySQL installation. For example, you might want to drop the "test" database, or restrict
+anonymous use. </p>
+
+<p><strong>4. Create user and password environment variables</strong></p>
+
+<p>There are at least two good reasons you shouldn't put your MySQL credentials (username and password) in your Play application.conf file
+if you are using a cloud-based hosting service such as GitHub:</p>
+
+<ol>
+<li>Other developers working on the system will either have to define the same credentials or override yours;</li>
+<li>It is just totally lame to put credentials into publicly available files hosted online.</li>
+</ol><p>Fortunately, there is an easy solution: reference environment variables that point to 
+the actual credentials. To support this approach, define three environment variables with the
+MySQL username and password you wish to use for local Play development.  On Unix, you might edit ~/.profile to include:</p>
+
+<pre><code>export DATABASE_URL_DB=mysql://localhost/playexamplemysql?characterEncoding=UTF-8
+export DATABASE_USERNAME_DB=root
+export DATABASE_PASSWORD_DB=YourPasswordHere
+</code></pre>
+
+<p>If you choose to create a new MySQL user rather than using the root user, then 
+you will need to be sure to grant that user privileges for the database
+manipulated by the application. </p>
+
+<p><strong>5. Create the database to be used with your Play application</strong></p>
+
+<p>A significant difference between Play's default "H2" database and MySQL
+is that H2 will automatically create the database to be used with your Play
+application, but MySQL will not. Thus, you have to manually create the MySQL database to be used
+with your application.</p>
+
+<p>For this example, we will call our database "playexamplemysql". Assuming we 
+are using the root user for Play development, you can create it in MySQL with the following</p>
+
+<pre><code>$ mysql -u root -p
+Enter password: &lt;enter password here&gt;
+mysql&gt; create database playexamplemysql;
+Query OK, 1 row affected (0.00 sec)
+mysql&gt; exit
+</code></pre>
+
+<p><strong>6. Edit Build.scala</strong></p>
+
+<p>Add this line:</p>
+
+<pre><code>"mysql" % "mysql-connector-java" % "5.1.21"
+</code></pre>
+
+<p>See the <a href="https://github.com/ics-software-engineering/play-example-mysql/blob/master/project/Build.scala">example Build.scala file</a> for details.</p>
+
+<p><strong>7. Edit application.conf</strong></p>
+
+<p>Edit four properties to reference your environment variables as follows:</p>
+
+<pre><code>db.default.driver=com.mysql.jdbc.Driver
+db.default.url="jdbc:"${DATABASE_URL_DB}
+db.default.user=${DATABASE_USERNAME_DB}
+db.default.password=${DATABASE_PASSWORD_DB}
+</code></pre>
+
+<p>Note that this is conveniently the exact syntax required by CloudBees, so the same lines will work
+for local development and remote CloudBees deployment.</p>
+
+<p>To enable the ORM to automatically create and maintain the MySQL tables and schemas associated
+with your application, add the following line in the Evolutions section:</p>
+
+<pre><code>applyEvolutions.default=true
+</code></pre>
+
+<p>Finally, to activate the Ebean ORM, uncomment the following line:</p>
+
+<pre><code>ebean.default="models.*"
+</code></pre>
+
+<p>See the <a href="https://github.com/ics-software-engineering/play-example-mysql/blob/master/conf/application.conf">example application.conf</a> to 
+see all these changes in context.</p>
+
+<p><strong>8. Test your local Play+MySQL installation.</strong></p>
+
+<p>An easy way to test your local MySQL installation is to run this sample application (play-example-mysql).
+This application minimally enhances the default Play application with a single entity (<a href="https://github.com/ics-software-engineering/play-example-mysql/blob/master/app/models/PageRetrieval.java">PageRetrieval</a>),
+an instance of which is created and saved in the MySQL database each time the home page is retrieved.  The <a href="https://github.com/ics-software-engineering/play-example-mysql/blob/master/app/controllers/Application.java">index
+controller</a> is modified to retrieve the total number of PageRetrieval instances from the database
+each time a request for the home page is received, and creates a string indicating the total in the home page.</p>
+
+<p>The following screen shot illustrates the running application:</p>
+
+<p><img src="https://raw.github.com/ics-software-engineering/play-example-mysql/master/doc/play-example-mysql-home.png" alt="screenshot"></p>
+
+<p>Each time you refresh the page, the number displayed will increment.</p>
+
+<p>To test your MySQL installation using play-example-mysql, do the following:</p>
+
+<ul>
+<li>Install and run MySQL as described above. </li>
+<li>Define the three environment variables as specified above.</li>
+<li>Download the source code, cd into the directory, and invoke "play run". (Using the run command invokes
+Play in "development mode", which will run evolutions to set up the appropriate tables in your MySQL database.)</li>
+<li>Retrieve the system in your browser at http://localhost:9000</li>
+<li>Refresh the page.   You should see the top line change to indicate a new number of page retrievals.</li>
+<li>Stop the system (control-D in the Play console). You will return to the shell.<br>
+</li>
+<li>Invoke "play run" again, and refresh the page in your browser. You should see an updated number
+of page retrievals indicating that the state of the database survived a web server restart. </li>
+</ul><h1>
+<a name="cloudbees-deployment" class="anchor" href="#cloudbees-deployment"><span class="octicon octicon-link"></span></a>CloudBees deployment</h1>
+
+<p>You will normally want to do local development in Play's "development mode" so that Play can 
+manage and evolve the database schemas (table definitions) for you automatically.  That's a big win.  The major 
+conceptual change for CloudBees deployment is that it uses Play's "production mode", which
+requires database schemas to be managed manually. </p>
+
+<p>So, to deploy your application to CloudBees, you must:</p>
+
+<ol>
+<li>Create the Play application stack on CloudBees.</li>
+<li>Manually create the table structure of your database.</li>
+<li>Disable database evolution.</li>
+<li>Deploy a distribution of the application to CloudBees.</li>
+</ol><p>Here's one of several possible ways to accomplish the above four steps.</p>
+
+<p><strong>1. Create the Play application stack on CloudBees.</strong></p>
+
+<p>Login to CloudBees, and use the ClickStart mechanism to create a new default Play application.
+For this example, I created a CloudBees application called "play-mysql".  I recommend that you 
+keep your CloudBees application names to 16 characters or less in order to avoid truncation. The
+benefit of using ClickStart is that it automates the details of associating a MySQL database to
+a Play application.</p>
+
+<p><strong>2. Manually create the table structure of your database.</strong></p>
+
+<p>As part of your local development, you will have created the folder conf/evolutions/default
+containing a set of .sql files with all of the SQL commands necessary to create your 
+MySQL database. For the play-example-mysql application, it consists of just a single table
+definition located in <a href="https://github.com/ics-software-engineering/play-example-mysql/blob/master/conf/evolutions/default/1.sql">1.sql</a>.</p>
+
+<p>Here is the table definition from that file that we need to recreate in CloudBees:</p>
+
+<pre><code>create table page_retrieval (
+  primary_key               bigint auto_increment not null,
+  timestamp                 bigint,
+  constraint pk_page_retrieval primary key (primary_key))
+;
+</code></pre>
+
+<p>To create this table in CloudBees, you will need to login directly to the database using a MySQL
+client.  On a Mac, a reasonable open source choice for the client is <a href="http://www.sequelpro.com/">Sequel Pro</a>.
+Regardless of the client you choose, you will need to obtain the database credentials from CloudBees.   Do this by installing
+the <a href="https://wiki.cloudbees.com/bin/view/RUN/BeesSDK">CloudBees SDK</a> and then invoking 
+"bees db:info -p youraccount/dbname".  For example, here's what I get for my example application:</p>
+
+<pre><code>$ bees db:info -p philipmjohnson/play-mysql
+  Database name: play-mysql
+  Account:       philipmjohnson
+  Created:       Mon Jul 29 12:38:19 HST 2013
+  Status:        active
+  Master:        ec2-50-19-213-178.compute-1.amazonaws.com:3306
+  Port:          3306
+  Username:      play-mysql
+  Password:      a8f8notmyrealpassword132904c2f
+</code></pre>
+
+<p>I can use the "Master", "Port", "Username", "Database name", and "Password" values to connect 
+using Sequel Pro as shown in the following screen shot:</p>
+
+<p><img src="https://raw.github.com/ics-software-engineering/play-example-mysql/master/doc/play-example-mysql-sequel-pro.png" alt="screenshot"></p>
+
+<p>Once connected, I can simply paste the page_retrieval table creation statement into the Query window
+and execute it to create the table. </p>
+
+<p>It is interesting to note that in local development, you must create the database manually but 
+tables are managed for you automatically, while CloudBees deployment is the opposite: it will create the database
+for you automatically but requires you to manually manage the tables.</p>
+
+<p><strong>3. Disable database evolutions.</strong></p>
+
+<p>CloudBees needs you to disable evolutions on your application, even though you will want them enabled for local
+development.   An easy way to achieve both is to create an alternative configuration file for 
+use by CloudBees.  I do this by creating <a href="https://github.com/ics-software-engineering/play-example-mysql/blob/master/conf/application.cloudbees.conf">application.cloudbees.conf</a>
+in the same directory as the application.conf file.   It is very simple:</p>
+
+<pre><code># This is the CloudBees configuration file for the application.
+# ~~~~~
+
+include "application.conf"
+
+# Evolutions
+# ~~~~~
+
+# Disable evolutions when using CloudBees
+evolutionplugin=disabled
+applyEvolutions.default=false
+</code></pre>
+
+<p>To tell CloudBees to use this file instead of application.conf, execute the "bees config:set" 
+command, supplying your account and application names and the alternative application.conf file. 
+Here's an example invocation of this command for the play-mysql application:</p>
+
+<pre><code>$ bees config:set -a philipmjohnson/play-mysql config.resource=application.cloudbees.conf
+  Application config parameters for philipmjohnson/play-mysql: saved
+
+  Application Parameters:
+    proxyBuffering=false
+    http_version=1.1
+    AppDynamics=false
+    config.resource=application.cloudbees.conf
+  Runtime Parameters:
+    java_version=1.7
+</code></pre>
+
+<p><strong>4. Deploy a distribution of the application to CloudBees.</strong></p>
+
+<p><em>Option 1: Manually.</em>  First, create a distribution zip file of your system by invoking "play dist". For example:</p>
+
+<pre><code>$ play dist
+[info] Loading project definition from /Users/johnson/projecthosting/github/play-example-mysql/project
+[info] Set current project to play-example-mysql (in build file:/Users/johnson/projecthosting/github/play-example-mysql/)
+[info] Wrote /Users/johnson/projecthosting/github/play-example-mysql/target/scala-2.10/play-example-mysql_2.10-1.0-SNAPSHOT.pom
+
+Your application is ready in /Users/johnson/projecthosting/github/play-example-mysql/dist/play-example-mysql-1.0-SNAPSHOT.zip
+
+[success] Total time: 2 s, completed Jul 30, 2013 7:42:37 PM
+</code></pre>
+
+<p>Next, send that distribution file to CloudBees using the "bees app:deploy" command. For example:</p>
+
+<pre><code>$ bees app:deploy -a philipmjohnson/play-mysql -t play2 dist/play-example-mysql-1.0-SNAPSHOT.zip
+  Deploying application philipmjohnson/play-mysql (environment: ): dist/play-example-mysql-1.0-SNAPSHOT.zip
+  Application parameters: {containerType=play2}
+  ........................uploaded 25%
+  ........................uploaded 50%
+  ........................uploaded 75%
+  ........................upload completed
+  deploying application to server(s)...
+  Application philipmjohnson/play-mysql deployed: http://play-mysql.philipmjohnson.cloudbees.net
+</code></pre>
+
+<p>Now you should be able to retrieve the application at the URL above:</p>
+
+<p><img src="https://raw.github.com/ics-software-engineering/play-example-mysql/master/doc/play-example-mysql-cloudbees.png" alt="screenshot"></p>
+
+<p>You can refresh this page and see that the counter is updated. </p>
+
+<p><em>Option 2: Continuous Integration.</em>  Another second approach is to automate the deployment of your 
+application by triggering a build and deployment each time you commit.  To see how to do that, 
+look at the <a href="http://ics-software-engineering.github.io/play-example-continuous-integration/">play-example-continuous-integration</a>
+project.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Play-example-mysql maintained by <a href="https://github.com/ics-software-engineering">ics-software-engineering</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
