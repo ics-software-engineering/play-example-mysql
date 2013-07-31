@@ -50,8 +50,7 @@ if you are using a cloud-based hosting service such as GitHub:
    
 Fortunately, there is an easy solution: reference environment variables that point to 
 the actual credentials. To support this approach, define three environment variables with the
-MySQL username and password you wish to use for local Play development.  
-On Unix, you might edit ~/.profile to include:
+MySQL username and password you wish to use for local Play development.  On Unix, you might edit ~/.profile to include:
 
     export DATABASE_URL_DB=mysql://localhost/playexamplemysql?characterEncoding=UTF-8
     export DATABASE_USERNAME_DB=root
@@ -155,13 +154,15 @@ So, to deploy your application to CloudBees, you must:
   
 Here's one of several possible ways to accomplish the above four steps.
 
-**Create the Play application stack on CloudBees.**
+**1. Create the Play application stack on CloudBees.**
 
 Login to CloudBees, and use the ClickStart mechanism to create a new default Play application.
 For this example, I created a CloudBees application called "play-mysql".  I recommend that you 
-keep your CloudBees application names to 16 characters or less in order to avoid truncation.
+keep your CloudBees application names to 16 characters or less in order to avoid truncation. The
+benefit of using ClickStart is that it automates the details of associating a MySQL database to
+a Play application.
 
-**Manually create the table structure of your database.**
+**2. Manually create the table structure of your database.**
 
 As part of your local development, you will have created the folder conf/evolutions/default
 containing a set of .sql files with all of the SQL commands necessary to create your 
@@ -200,11 +201,11 @@ using Sequel Pro as shown in the following screen shot:
 Once connected, I can simply paste the page_retrieval table creation statement into the Query window
 and execute it to create the table. 
 
-It is amusing to note that for local development, you must create the database manually but 
-tables are managed for you automatically, while CloudBees is the opposite: it will create the database
+It is interesting to note that in local development, you must create the database manually but 
+tables are managed for you automatically, while CloudBees deployment is the opposite: it will create the database
 for you automatically but requires you to manually manage the tables.
 
-**Disable database evolutions.**
+**3. Disable database evolutions.**
 
 CloudBees needs you to disable evolutions on your application, even though you will want them enabled for local
 development.   An easy way to achieve both is to create an alternative configuration file for 
@@ -238,7 +239,7 @@ Here's an example invocation of this command for the play-mysql application:
       Runtime Parameters:
         java_version=1.7
 
-**Deploy a distribution of the application to CloudBees.**
+**4. Deploy a distribution of the application to CloudBees.**
 
 *Option 1: Manually.*  First, create a distribution zip file of your system by invoking "play dist". For example:
 
@@ -266,6 +267,8 @@ Next, send that distribution file to CloudBees using the "bees app:deploy" comma
 Now you should be able to retrieve the application at the URL above:
 
 ![screenshot](https://raw.github.com/ics-software-engineering/play-example-mysql/master/doc/play-example-mysql-cloudbees.png)
+
+You can refresh this page and see that the counter is updated. 
 
 *Option 2: Continuous Integration.*  Another second approach is to automate the deployment of your 
 application by triggering a build and deployment each time you commit.  To see how to do that, 
