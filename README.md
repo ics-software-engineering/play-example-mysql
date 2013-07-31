@@ -108,8 +108,7 @@ Finally, to activate the Ebean ORM, uncomment the following line:
 See the [example application.conf](https://github.com/ics-software-engineering/play-example-mysql/blob/master/conf/application.conf) to 
 see all these changes in context.
 
-Test your local MySQL installation
-==================================
+**8. Test your local Play+MySQL installation.**
 
 An easy way to test your local MySQL installation is to run this sample application (play-example-mysql).
 This application minimally enhances the default Play application with a single entity ([PageRetrieval](https://github.com/ics-software-engineering/play-example-mysql/blob/master/app/models/PageRetrieval.java)),
@@ -122,8 +121,6 @@ The following screen shot illustrates the running application:
 ![screenshot](https://raw.github.com/ics-software-engineering/play-example-mysql/master/doc/play-example-mysql-home.png)
 
 Each time you refresh the page, the number displayed will increment.
-
-**Running this application**
 
 To test your MySQL installation using play-example-mysql, do the following:
 
