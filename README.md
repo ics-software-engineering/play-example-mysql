@@ -257,23 +257,33 @@ Here's an example invocation of this command for the play-mysql application:
     $ play dist
     [info] Loading project definition from /Users/johnson/projecthosting/github/play-example-mysql/project
     [info] Set current project to play-example-mysql (in build file:/Users/johnson/projecthosting/github/play-example-mysql/)
+    [info] Packaging /Users/johnson/projecthosting/github/play-example-mysql/target/scala-2.10/play-example-mysql_2.10-1.0-SNAPSHOT-sources.jar ...
+    [info] Done packaging.
+    [info] Main Scala API documentation to /Users/johnson/projecthosting/github/play-example-mysql/target/scala-2.10/api...
     [info] Wrote /Users/johnson/projecthosting/github/play-example-mysql/target/scala-2.10/play-example-mysql_2.10-1.0-SNAPSHOT.pom
-    
-    Your application is ready in /Users/johnson/projecthosting/github/play-example-mysql/dist/play-example-mysql-1.0-SNAPSHOT.zip
-    
-    [success] Total time: 2 s, completed Jul 30, 2013 7:42:37 PM
+    [info] Packaging /Users/johnson/projecthosting/github/play-example-mysql/target/scala-2.10/play-example-mysql_2.10-1.0-SNAPSHOT.jar ...
+    [info] Done packaging.
+    model contains 19 documentable templates
+    [info] Main Scala API documentation successful.
+    [info] Packaging /Users/johnson/projecthosting/github/play-example-mysql/target/scala-2.10/play-example-mysql_2.10-1.0-SNAPSHOT-javadoc.jar ...
+    [info] Done packaging.
+    [info] 
+    [info] Your package is ready in /Users/johnson/projecthosting/github/play-example-mysql/target/universal/play-example-mysql-1.0-SNAPSHOT.zip
+    [info] 
+    [success] Total time: 8 s, completed Nov 12, 2013 4:07:26 PM
 
 Next, send that distribution file to CloudBees using the "bees app:deploy" command. For example:
 
-    $ bees app:deploy -a philipmjohnson/play-mysql -t play2 dist/play-example-mysql-1.0-SNAPSHOT.zip
-      Deploying application philipmjohnson/play-mysql (environment: ): dist/play-example-mysql-1.0-SNAPSHOT.zip
-      Application parameters: {containerType=play2}
-      ........................uploaded 25%
-      ........................uploaded 50%
-      ........................uploaded 75%
-      ........................upload completed
-      deploying application to server(s)...
-      Application philipmjohnson/play-mysql deployed: http://play-mysql.philipmjohnson.cloudbees.net
+    $ bees app:deploy -d false -R java_version=1.7 -a philipmjohnson/play-mysql -t play2 target/universal/play-example-mysql-1.0-SNAPSHOT.zip 
+    Deploying application philipmjohnson/play-mysql (environment: ): target/universal/play-example-mysql-1.0-SNAPSHOT.zip
+    Application parameters: {containerType=play2}
+    Runtime parameters: {java_version=1.7}
+    ........................uploaded 25%
+    ........................uploaded 50%
+    ........................uploaded 75%
+    ........................upload completed
+    deploying application to server(s)...
+    Application philipmjohnson/play-mysql deployed: http://play-mysql.philipmjohnson.cloudbees.net
 
 Now you should be able to retrieve the application at the URL above:
 
