@@ -2,15 +2,15 @@ package models;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
 @Entity
 public class PageRetrieval extends Model {
 
+  private static final long serialVersionUID = 1L;
+
   @Id
-  private Long primaryKey;
-  @Required
+  private Long id;
   private Long timestamp = System.currentTimeMillis();
 
   /**

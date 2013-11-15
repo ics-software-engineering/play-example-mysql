@@ -183,9 +183,9 @@ definition located in [1.sql](https://github.com/ics-software-engineering/play-e
 Here is the table definition from that file that we need to recreate in CloudBees:
 
     create table page_retrieval (
-      primary_key               bigint auto_increment not null,
+      id                        bigint auto_increment not null,
       timestamp                 bigint,
-      constraint pk_page_retrieval primary key (primary_key))
+      constraint pk_page_retrieval primary key (id))
     ;
     
 To create this table in CloudBees, you will need to login directly to the database using a MySQL
