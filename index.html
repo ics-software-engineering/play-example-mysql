@@ -221,9 +221,9 @@ definition located in <a href="https://github.com/ics-software-engineering/play-
 <p>Here is the table definition from that file that we need to recreate in CloudBees:</p>
 
 <pre><code>create table page_retrieval (
-  primary_key               bigint auto_increment not null,
+  id                        bigint auto_increment not null,
   timestamp                 bigint,
-  constraint pk_page_retrieval primary key (primary_key))
+  constraint pk_page_retrieval primary key (id))
 ;
 </code></pre>
 
