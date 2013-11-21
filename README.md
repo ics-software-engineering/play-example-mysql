@@ -76,13 +76,13 @@ are using the root user for Play development, you can create it in MySQL with th
     Query OK, 1 row affected (0.00 sec)
     mysql> exit
  
-**6. Edit Build.scala**
+**6. Edit build.sbt**
 
 Add this line:
 
     "mysql" % "mysql-connector-java" % "5.1.21"
 
-See the [example Build.scala file](https://github.com/ics-software-engineering/play-example-mysql/blob/master/project/Build.scala) for details.
+See the [example build.sbt file](https://github.com/ics-software-engineering/play-example-mysql/blob/master/build.sbt) for details.
 
 **7. Edit application.conf**
 
